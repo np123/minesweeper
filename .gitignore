@@ -1,0 +1,12 @@
+build/
+
+.settings/
+
+*.class
+
+.jar
+
+.classpath
+
+.project
+/bin/
