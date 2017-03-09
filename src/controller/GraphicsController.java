@@ -148,18 +148,14 @@ public class GraphicsController extends MouseAdapter{
 		}
 	}	
 
-	/**
-	 * Starts the timer
-	 */
+	
 	public static void startTime(){
 		time = new Timer();
 		time.scheduleAtFixedRate(new UpdateTimeTask(), 1000, 1000);
 		clock.repaint();
 	}
 	
-	/**
-	 * Stops (cancels) the timer
-	 */
+	
 	public static void freezeTime(){
 		time.cancel();
 		time.purge();
@@ -174,9 +170,7 @@ public class GraphicsController extends MouseAdapter{
 		clock.repaint();
 	}
 	
-	/**
-	 * Resets the game (board and timer)
-	 */
+	
 	private void reset(){
 		new model.Board(width, height, rows, cols);
 		for (int i = 0; i < grid.size(); i++) {
