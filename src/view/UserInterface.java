@@ -71,7 +71,7 @@ public class UserInterface extends JPanel {
 	}
 
 	private void drawState(Graphics g){		
-		Integer rem = board.numMines();
+		Integer rem = board.mines.size();
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesNewRoman", Font.BOLD, 15));		
 		g.drawString("Mines Remaining: " + rem.toString(), 10, 30);

@@ -50,8 +50,7 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 	private final int size = rows * cols;
 	private static final int screenSize;
 
-	public ArrayList<JButton> grid = new ArrayList<JButton>();
-	public ArrayList<JButton> mine = new ArrayList<JButton>();
+	public ArrayList<JButton> grid = new ArrayList<JButton>();	
 
 	static {
 
@@ -196,7 +195,7 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 				control.grid.get(i).setIcon(null);
 				control.grid.get(i).setEnabled(true);
 				control.grid.get(i).setVisible(true);
-				control.mine.clear();
+				control.board.minesFound.clear();
 			}
 			counter.reset();
 			control.clock.setText("000");
@@ -212,14 +211,14 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 	 *            the square that was clicked
 	 */
 	private void mark(int source) {
-		if (!mine.contains(grid.get(source))) {
+		if (!board.minesFound.contains(grid.get(source))) {
 			grid.get(source).setEnabled(false);
 			grid.get(source)
 					.setIcon(new ImageIcon(getClass().getResource("/toolbarButtonGraphics/general/Stop24.gif")));
 			grid.get(source).updateUI();
-			mine.add(grid.get(source));
+			board.minesFound.add(grid.get(source));
 		} else {
-			mine.remove(grid.get(source));
+			board.minesFound.remove(grid.get(source));
 			grid.get(source).setIcon(null);
 			grid.get(source).setEnabled(true);
 		}
@@ -254,7 +253,7 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 		if (position == -1)
 			return;
 
-		if (e.getButton() == MouseEvent.BUTTON1 && mine.indexOf(e.getSource()) == -1
+		if (e.getButton() == MouseEvent.BUTTON1 && board.minesFound.indexOf(e.getSource()) == -1
 				&& ((JButton) e.getSource()).isEnabled())
 			engine.reveal(position);
 		else if (e.getButton() == MouseEvent.BUTTON3)
@@ -279,7 +278,10 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 			}
 			for (GraphicsController control : games){
 				control.setTime(time);
-				if ((start - count) % 20 == 0) control.addMine();
+				if ((start - count) % 20 == 0) {
+					control.addMine();
+					control.UI.update();
+				}
 			}
 			count--;
 		}
@@ -300,11 +302,11 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 	}
 	
 	private void addMine(){
-		List<JButton> hidden = grid.stream().filter(b -> !mine.contains(b)).collect(Collectors.toList());
+		List<JButton> hidden = grid.stream().filter(b -> !board.mines.contains(grid.indexOf(b)) && b.isVisible()).collect(Collectors.toList());
 		Random rand = new Random();
 		int index = rand.nextInt(hidden.size());
-		mine.add(hidden.get(index));
 		board.getNode(grid.indexOf(hidden.get(index))).setMine();
+		board.mines.add(grid.indexOf(hidden.get(index)));
 	}
 
 }

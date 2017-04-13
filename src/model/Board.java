@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JButton;
+
 /**
  * The Board class contains the representation of the game board
  * and also the logic for processing moves 
@@ -12,6 +14,9 @@ public class Board {
 		
 	//Grid for the game board	
 	private Node[] nodes;	
+	
+	public ArrayList<JButton> minesFound = new ArrayList<JButton>();
+	public ArrayList<Integer> mines;	
 	private int numMines;
 	
 	/**
@@ -24,7 +29,7 @@ public class Board {
 	 */
 	public Board(int width, int height, int rows, int cols){
 		
-		ArrayList<Integer> mines = new ArrayList<Integer>();
+		mines = new ArrayList<Integer>();
 		nodes = new Node[rows*cols];
 		numMines = (rows*cols)/8;
 		
