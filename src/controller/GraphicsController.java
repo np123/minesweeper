@@ -2,8 +2,10 @@ package controller;
 
 import java.util.Timer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.TimerTask;
-
+import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
@@ -261,7 +263,8 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 	}
 
 	static class UpdateTimeTask extends TimerTask {
-		public Integer count = 300;
+		private Integer start = 300;
+		public Integer count = start;
 
 		public void run() {
 			String time = "";
@@ -274,8 +277,10 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 			} else {
 				time = count.toString();
 			}
-			for (GraphicsController control : games)
+			for (GraphicsController control : games){
 				control.setTime(time);
+				if ((start - count) % 20 == 0) control.addMine();
+			}
 			count--;
 		}
 
@@ -292,6 +297,14 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 		initButtons();
 		initTimer();
 		initWindow();
+	}
+	
+	private void addMine(){
+		List<JButton> hidden = grid.stream().filter(b -> !mine.contains(b)).collect(Collectors.toList());
+		Random rand = new Random();
+		int index = rand.nextInt(hidden.size());
+		mine.add(hidden.get(index));
+		board.getNode(grid.indexOf(hidden.get(index))).setMine();
 	}
 
 }
