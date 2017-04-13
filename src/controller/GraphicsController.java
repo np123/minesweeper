@@ -13,11 +13,14 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.imageio.ImageIO;
@@ -30,7 +33,7 @@ import javax.swing.SwingUtilities;
  * by calling appropriate methods in the model and view packages
  *
  */
-public class GraphicsController extends MouseAdapter implements Runnable {
+public class GraphicsController extends MouseAdapter implements Runnable, WindowListener {
 
 	private model.Board board;
 	private view.UserInterface UI;
@@ -138,6 +141,7 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 		window.setSize(width, height);
 		window.setBackground(Color.DARK_GRAY);
 		window.add(this.UI);
+		window.addWindowListener(this);
 		window.setLocationRelativeTo(null);
 		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.setVisible(true);
@@ -307,6 +311,55 @@ public class GraphicsController extends MouseAdapter implements Runnable {
 		int index = rand.nextInt(hidden.size());
 		board.getNode(grid.indexOf(hidden.get(index))).setMine();
 		board.mines.add(grid.indexOf(hidden.get(index)));
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		int action = JOptionPane.showConfirmDialog(
+			    null,
+			    "Are you sure you want to exit?",
+			    "Confirm exit",
+			    JOptionPane.YES_NO_OPTION);
+		if (action == JOptionPane.YES_OPTION){
+			System.exit(0);
+		}
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
