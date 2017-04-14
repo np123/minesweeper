@@ -160,29 +160,24 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		}
 	}
 
-	/**
-	 * Starts the timer
-	 */
-	public static void startTime() {
+
+	public static void startTime(){
 		time = new Timer();
 		counter = new UpdateTimeTask();
 		time.scheduleAtFixedRate(counter, 1000, 1000);
 		for (GraphicsController control : games)
 			control.clock.repaint();
-	}
-
-	/**
-	 * Stops (cancels) the timer
-	 */
-	public static void freezeTime() {
+	}	
+	
+	public static void freezeTime(){
 		time.cancel();
 		time.purge();
 		time = null;
 	}
 
 	/**
-	 * @param time
-	 *            sets the display time
+	 * Sets the display time
+	 * @param time	 
 	 */
 	public void setTime(String time) {
 		clock.setText(time);
@@ -200,12 +195,11 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 				control.grid.get(i).setEnabled(true);
 				control.grid.get(i).setVisible(true);
 				control.board.minesFound.clear();
-			}
-			counter.reset();
-			control.clock.setText("000");
+			}			
+			control.clock.setText("300");
 			control.clock.repaint();
 		}
-		startTime();
+		counter.reset();
 	}
 
 	/**
@@ -291,7 +285,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		}
 
 		public void reset() {
-			count = 0;
+			count = start;
 		}
 	}
 
