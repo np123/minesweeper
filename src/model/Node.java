@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class Node {
-
+	
 	private final int position;
 	private int score = 0;
 	private boolean mine = false;
@@ -20,15 +20,16 @@ public class Node {
 	
 	public void setMine(){
 		mine = true;
-	}
-	
-	public void addConnection(int pos){
-		connections.add(Board.getNode(pos));
-		if (Board.getNode(pos).isMine()) score++;
+		score++;
 	}
 	
 	public int score(){
 		return score;
+	}
+	
+	public void addConnection(Node pos){
+		connections.add(pos);
+		if (pos.isMine()) score++;
 	}
 	
 	public static boolean isConnected(Node first, Node second){
