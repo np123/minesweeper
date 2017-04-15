@@ -27,6 +27,10 @@ public class Node {
 		return score;
 	}
 	
+	public void addAdj(){
+		score++;
+	}
+	
 	public void addConnection(Node pos){
 		connections.add(pos);
 		if (pos.isMine()) score++;

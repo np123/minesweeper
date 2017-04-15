@@ -43,6 +43,10 @@ public class UserInterface extends JPanel {
 		startHeight = 50;
 	}
 
+	public void setBoard(Board board){
+		this.board = board;
+	}
+	
 	public void update(){
 		super.repaint();
 	}
@@ -71,7 +75,7 @@ public class UserInterface extends JPanel {
 	}
 
 	private void drawState(Graphics g){		
-		Integer rem = board.mines.size();
+		Integer rem = board.mines.size() - board.minesFound.size();
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesNewRoman", Font.BOLD, 15));		
 		g.drawString("Mines Remaining: " + rem.toString(), 10, 30);

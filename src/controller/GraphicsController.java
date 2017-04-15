@@ -23,6 +23,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+
+import model.Node;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
@@ -189,17 +192,22 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	 */
 	private static void reset() {
 		for (GraphicsController control : games) {
+			control.board.minesFound.clear();
+			control.board.mines.clear();
 			control.board = new model.Board(control.width, control.height, control.rows, control.cols);
 			for (int i = 0; i < control.grid.size(); i++) {
 				control.grid.get(i).setIcon(null);
 				control.grid.get(i).setEnabled(true);
-				control.grid.get(i).setVisible(true);
-				control.board.minesFound.clear();
-			}			
+				control.grid.get(i).setVisible(true);				
+			}
+			control.engine.setBoard(control.board);
+			control.UI.setBoard(control.board);
 			control.clock.setText("300");
 			control.clock.repaint();
+			control.UI.repaint();
 		}
 		counter.reset();
+		startTime();
 	}
 
 	/**
@@ -307,8 +315,12 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		List<JButton> hidden = grid.stream().filter(b -> !board.mines.contains(grid.indexOf(b)) && b.isVisible()).collect(Collectors.toList());
 		Random rand = new Random();
 		int index = rand.nextInt(hidden.size());
-		board.getNode(grid.indexOf(hidden.get(index))).setMine();
-		board.mines.add(grid.indexOf(hidden.get(index)));
+		int sq = grid.indexOf(hidden.get(index));
+		board.getNode(sq).setMine();
+		board.mines.add(sq);
+		
+		// Update adjacent mine count
+		for (Node pos: board.getNode(sq).getAdjacent()) pos.addAdj();
 	}
 
 	@Override
@@ -359,5 +371,4 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		// TODO Auto-generated method stub
 		
 	}
-
 }
