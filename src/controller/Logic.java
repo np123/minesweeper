@@ -37,6 +37,7 @@ public class Logic {
 				}
 			}
 			reveal();
+			GraphicsController.showLoss();
 			return;
 		}
 		if (board.getNode(source).score() == 0) reveal(bfs(board.getNode(source)), source);		

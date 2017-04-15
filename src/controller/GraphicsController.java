@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +59,34 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 
 	public ArrayList<JButton> grid = new ArrayList<JButton>();	
 
+	/*
+	 * Statements in lossmsgs and winmsgs are taken from quotes from
+	 * a computer game Stronghold Crusader by Firefly Studios that
+	 * I found of particular interest
+	 * I claim no credit for the words contained therein, nor am I
+	 * affiliated with or claim endorsement from Firefly Studios 
+	 */ 
+	
+	private static String[] lossmsgs = new String[]{"My plans worked perfectly. You are no match for me!", 
+			"Lost again, have we?\nMaybe you are not up to the job, hm?",
+			"Am I victorious? Oh, yes, I am! Hehehehehe!",
+			"It's over my friend, let's face it. You've lost!",
+			"This is too easy! Fight harder!",			
+			"As it must be, another has fallen before me",
+			"One more bites the dust, er... what! Hahaha",
+			"Oh dear. Well, that wasn't very clever of you!",
+			"Fiddlesticks! Lost again, dammit"
+	};
+	
+	private static String[] winmsgs = new String[]{
+			"Oh, just chalked up another one, hahahah!",
+			"Maybe I have underestimated you a little?",
+			"You are mighty in battle. But are you just as well?",
+			"Good work, my Lord.\nWe are royally impressed at your accomplishment!",
+			"The world has gone crazy! I-I-I I should have destroyed you!",		
+	};
+	
+	
 	static {
 
 		// Sets window height and width based on device graphics settings
@@ -213,8 +242,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	/**
 	 * Toggles the marking of a possible mine on the board
 	 * 
-	 * @param source
-	 *            the square that was clicked
+	 * @param source the square that was clicked
 	 */
 	private void mark(int source) {
 		if (!board.minesFound.contains(grid.get(source))) {
@@ -268,32 +296,32 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	}
 
 	static class UpdateTimeTask extends TimerTask {
-		private Integer start = 300;
-		public Integer count = start;
+		private final AtomicInteger start = new AtomicInteger(300);
+		public AtomicInteger count = new AtomicInteger(300);
 
 		public void run() {
 			String time = "";
-			if (count < 10) {
+			if (count.intValue() < 10) {
 				time = "00" + count.toString();
-			} else if (count < 100) {
+			} else if (count.intValue() < 100) {
 				time = "0" + count.toString();
-			} else if (count > 999) {
+			} else if (count.intValue() > 999) {
 				time = "999";
 			} else {
 				time = count.toString();
 			}
 			for (GraphicsController control : games){
 				control.setTime(time);
-				if ((start - count) % 20 == 0) {
+				if ((start.intValue() - count.intValue()) % 15 == 0) {
 					control.addMine();
 					control.UI.update();
 				}
 			}
-			count--;
+			count.decrementAndGet();
 		}
 
 		public void reset() {
-			count = start;
+			count.set(start.intValue());
 		}
 	}
 
@@ -323,6 +351,35 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		for (Node pos: board.getNode(sq).getAdjacent()) pos.addAdj();
 	}
 
+	public static void showLoss(){
+		int index = (new Random()).nextInt(lossmsgs.length);
+		int action = JOptionPane.showConfirmDialog(
+			    null,
+			    lossmsgs[index] + "\n\nTry again?",
+			    "",
+			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			    null);
+		if (action == JOptionPane.NO_OPTION){
+			System.exit(0);
+		} else if (action == JOptionPane.YES_OPTION){
+			GraphicsController.reset();
+		}
+	}		
+	
+	public static void showWin(){
+		int index = (new Random()).nextInt(winmsgs.length);
+		int action = JOptionPane.showConfirmDialog(
+			    null,
+			    winmsgs[index] + "\n\nPlay again?",
+			    "",
+			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		if (action == JOptionPane.NO_OPTION){
+			System.exit(0);
+		} else if (action == JOptionPane.YES_OPTION){
+			GraphicsController.reset();
+		}
+	}
+	
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
