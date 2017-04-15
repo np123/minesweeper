@@ -299,6 +299,10 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		initWindow();
 	}
 	
+	public boolean checkMine(int i){
+		return board.getNode(i).isMine();
+	}
+	
 	private void addMine(){
 		List<JButton> hidden = grid.stream().filter(b -> !board.mines.contains(grid.indexOf(b)) && b.isVisible()).collect(Collectors.toList());
 		Random rand = new Random();

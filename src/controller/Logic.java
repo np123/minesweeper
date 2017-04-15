@@ -7,27 +7,27 @@ import model.Board;
 import model.Node;
 
 public class Logic {
-		
+
 	private Board board;
 	private GraphicsController controller;
-	
+
 	public void setBoard(Board b){
 		board = b;
 	}
-	
+
 	public void setControl(GraphicsController control){
 		controller = control;
 	}
-	
+
 	public void addMine(){
 		ArrayList<Integer> hidden = new ArrayList<Integer>();
 		for (int i = 0; i < controller.size(); i++){
-		    if (controller.grid.get(i).isEnabled() && board.getNode(i).isMine()){
-		        hidden.add(i);
-		    }
+			if (controller.grid.get(i).isEnabled() && board.getNode(i).isMine()){
+				hidden.add(i);
+			}
 		}
 	}
-	
+
 	public void reveal(int source){			
 		if (board.getNode(source).isMine()) {			
 			GraphicsController.freezeTime();
@@ -42,23 +42,23 @@ public class Logic {
 		if (board.getNode(source).score() == 0) reveal(bfs(board.getNode(source)), source);		
 		else controller.grid.get(source).setVisible(false);
 	}
-	
+
 	private void reveal(){
-		for (int i = 0; i < controller.size(); i++){
-			if (board.getNode(i).isMine()){
-				for (GraphicsController control : GraphicsController.games){
+		for (GraphicsController control : GraphicsController.games){
+			for (int i = 0; i < controller.size(); i++){
+				if (control.checkMine(i)){				
 					control.grid.get(i).setVisible(false);
 				}
 			}
 		}
 	}
-	
+
 	private void reveal(Iterable<Node> clear, int source){		
 		for (Node n : clear){				
 			controller.grid.get(n.getPosition()).setVisible(false);			
 		}
 	}
-	
+
 	private Iterable<Node> bfs(Node start){
 
 		LinkedList<Node> visitedNodes = new LinkedList<Node>();					//Used as a queue to facilitate the breadth-first search 		
