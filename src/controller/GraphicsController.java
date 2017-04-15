@@ -372,7 +372,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 			    null,
 			    winmsgs[index] + "\n\nPlay again?",
 			    "",
-			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null);
 		if (action == JOptionPane.NO_OPTION){
 			System.exit(0);
 		} else if (action == JOptionPane.YES_OPTION){
