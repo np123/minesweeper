@@ -50,6 +50,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	private static Timer time;
 	private JButton newGame;
 
+	private final boolean debug;
 	private final int width;
 	private final int height;
 	private final int rows = 15;
@@ -109,8 +110,10 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	 * Instantiates a GraphicsController and configures the window size based on
 	 * the current displays' settings
 	 */
-	public GraphicsController() {
+	public GraphicsController(boolean debug) {
 
+		this.debug = debug;
+		
 		width = (int) (screenSize / 25 * cols);
 		height = (int) (screenSize / 25 * rows);
 
@@ -193,7 +196,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	}
 
 
-	public static void startTime(){
+	public synchronized static void startTime(){
 		time = new Timer();
 		counter = new UpdateTimeTask();
 		time.scheduleAtFixedRate(counter, 1000, 1000);
@@ -204,6 +207,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	public static void freezeTime(){
 		time.cancel();
 		time.purge();
+		counter.cancel();
 		time = null;
 	}
 
@@ -312,7 +316,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 			}
 			for (GraphicsController control : games){
 				control.setTime(time);
-				if ((start.intValue() - count.intValue()) % 15 == 0) {
+				if (count.intValue() < 300 && (start.intValue() - count.intValue()) % 15 == 0) {
 					control.addMine();
 					control.UI.update();
 				}
@@ -320,7 +324,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 			count.decrementAndGet();
 		}
 
-		public void reset() {
+		public synchronized void reset() {
 			count.set(start.intValue());
 		}
 	}
@@ -330,9 +334,14 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		UI = new view.UserInterface(board, screenSize, rows, cols);
 		view.Layout layout = new view.Layout(width, height + 50);
 		UI.setLayout(layout);
-		initButtons();
-		initTimer();
-		initWindow();
+		if (!debug){
+			initButtons();
+			initTimer();
+			initWindow();
+		} else {
+			UI.writeScore();
+			System.exit(0);
+		}
 	}
 	
 	public boolean checkMine(int i){
@@ -378,6 +387,10 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		} else if (action == JOptionPane.YES_OPTION){
 			GraphicsController.reset();
 		}
+	}
+	
+	public void setDebug(){
+		UI.debug = true;
 	}
 	
 	@Override

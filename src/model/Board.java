@@ -18,6 +18,9 @@ public class Board {
 	public ArrayList<JButton> minesFound = new ArrayList<JButton>();
 	public ArrayList<Integer> mines;	
 	private int numMines;
+	private int size;
+	private int rows;
+	private int cols;
 	
 	/**
 	 * Initializes a board using the specified dimension
@@ -32,6 +35,9 @@ public class Board {
 		mines = new ArrayList<Integer>();
 		nodes = new Node[rows*cols];
 		numMines = (rows*cols)/8;
+		this.rows = rows;
+		this.cols = cols;
+		
 		
 		for (int pos = 0; pos < rows*cols; pos++){
 			nodes[pos] = new Node(pos);
@@ -46,6 +52,18 @@ public class Board {
 			}
 		}
 		setup(rows,cols);	
+	}
+	
+	public int rows(){
+		return rows;
+	}
+	
+	public int cols(){
+		return cols;
+	}
+	
+	public int size(){
+		return rows * cols;
 	}
 	
 	/**

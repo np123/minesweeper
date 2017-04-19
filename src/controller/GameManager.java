@@ -11,9 +11,16 @@ import javax.swing.SwingUtilities;
 public class GameManager {
 
 	public static void main(String[] args) {		
-		GraphicsController game1 = new GraphicsController();
-		GraphicsController game2 = new GraphicsController();
-		//GraphicsController game3 = new GraphicsController();
+			
+		boolean debug = false;
+		
+		if (args != null && args.length > 0&& args[0].equals("-debug")){
+			debug = true;
+			System.out.println("debug enabled");
+		}
+		GraphicsController game1 = new GraphicsController(debug);		
+		GraphicsController game2 = new GraphicsController(debug);
+		//GraphicsController game3 = new GraphicsController(debug);
 		
 		Thread g1 = new Thread(game1);
 		Thread g2 = new Thread(game2);

@@ -4,6 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.InputStream;
+
 import javax.swing.JPanel;
 
 import model.Board;
@@ -14,7 +20,8 @@ public class UserInterface extends JPanel {
 
 	public boolean guessMade = false;
 	private Board board;
-	
+	public boolean debug = false;
+
 	final int windowHeight;
 	final int windowWidth;
 
@@ -26,9 +33,9 @@ public class UserInterface extends JPanel {
 
 	final int rows;
 	final int cols;
-	
+
 	public UserInterface(Board board, int size, int row, int col){
-		
+
 		this.board = board;
 		rows = row;
 		cols = col;		
@@ -46,7 +53,7 @@ public class UserInterface extends JPanel {
 	public void setBoard(Board board){
 		this.board = board;
 	}
-	
+
 	public void update(){
 		super.repaint();
 	}
@@ -80,7 +87,7 @@ public class UserInterface extends JPanel {
 		g.setFont(new Font("TimesNewRoman", Font.BOLD, 15));		
 		g.drawString("Mines Remaining: " + rem.toString(), 10, 30);
 	}
-	
+
 	private void drawGrid(Graphics g){
 		g.setColor(Color.GRAY);
 		int count = 0;
@@ -117,9 +124,29 @@ public class UserInterface extends JPanel {
 				if (score > 0 && !board.getNode(count).isMine()) g.drawString(score + "", x + (int) (windowWidth/(2.5*cols)), y + (int) (windowHeight/(1.5*rows)));
 				g.setColor(Color.BLACK);
 				if (board.getNode(count).isMine()) g.drawString("X", x + (int) (windowWidth/(3*cols)), y + (int) (windowHeight/(1.5*rows)));
-				count++;
+				count++;								
 			}
 		}
+		if (debug == true) writeScore();
 	}
 
+	public void writeScore(){
+
+		try {
+			String fileName = "score.txt";
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+
+			for (int i = 0; i < board.rows(); i++){
+				for (int j = 0; j < board.cols(); j++){
+					if (board.getNode(i * cols + j).isMine()) bufferedWriter.write("X");
+					else bufferedWriter.write(String.valueOf(board.getNode(i * cols + j).score()));
+					if (j < board.cols() - 1) bufferedWriter.write(',');
+				}
+				bufferedWriter.newLine();
+			}
+			bufferedWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
