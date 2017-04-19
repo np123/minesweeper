@@ -19,15 +19,15 @@ public class GameManager {
 			System.out.println("debug enabled");
 		}
 		GraphicsController game1 = new GraphicsController(debug);		
-		//GraphicsController game2 = new GraphicsController(debug);
+		GraphicsController game2 = new GraphicsController(debug);
 		//GraphicsController game3 = new GraphicsController(debug);
 		
 		Thread g1 = new Thread(game1);
-		//Thread g2 = new Thread(game2);
+		Thread g2 = new Thread(game2);
 		//Thread g3 = new Thread(game3);
 		SwingUtilities.invokeLater(g1);
-		//SwingUtilities.invokeLater(g2);
-		//g3.start();
+		SwingUtilities.invokeLater(g2);
+
 	}
 
 }
