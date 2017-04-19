@@ -44,7 +44,7 @@ public class Logic {
 		else controller.grid.get(source).setVisible(false);
 	}
 
-	private void reveal(){
+	public void reveal(){
 		for (GraphicsController control : GraphicsController.games){
 			for (int i = 0; i < control.size(); i++){
 				if (control.checkMine(i)){				

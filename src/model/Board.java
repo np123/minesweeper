@@ -100,4 +100,7 @@ public class Board {
 		return numMines;
 	}
 	
+	public void addMine(){
+		numMines++;
+	}
 }

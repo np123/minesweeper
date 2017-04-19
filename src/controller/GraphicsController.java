@@ -57,6 +57,8 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 	private final int cols = 15;
 	private final int size = rows * cols;
 	private static final int screenSize;
+	
+	private static AtomicInteger wins = new AtomicInteger(0);
 
 	public ArrayList<JButton> grid = new ArrayList<JButton>();	
 
@@ -316,11 +318,13 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 			}
 			for (GraphicsController control : games){
 				control.setTime(time);
+				control.checkWin();
 				if (count.intValue() < 300 && (start.intValue() - count.intValue()) % 15 == 0) {
 					control.addMine();
 					control.UI.update();
 				}
-			}
+				control.checkWin();
+			}			
 			count.decrementAndGet();
 		}
 
@@ -348,6 +352,27 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		return board.getNode(i).isMine();
 	}
 	
+	public void checkWin(){
+		List<JButton> rem = grid.stream().filter(b -> !board.minesFound.contains(grid.get(grid.indexOf(b))) && b.isVisible()).collect(Collectors.toList());
+				
+		if (rem.size() == board.numMines() - board.minesFound.size()) {
+			for (JButton b : board.minesFound){
+				if (!board.mines.contains(grid.indexOf(b))) return;
+			}			
+			System.out.println(board.numMines());
+			System.out.println(board.minesFound.size());
+			GraphicsController.wins.incrementAndGet();
+		}
+		if (GraphicsController.wins.intValue() == GraphicsController.games.size()){
+			GraphicsController.wins.set(0);			
+			GraphicsController.freezeTime();
+			
+			for (GraphicsController control : GraphicsController.games)
+				control.engine.reveal();
+			GraphicsController.showWin();
+		}
+	}
+	
 	private void addMine(){
 		List<JButton> hidden = grid.stream().filter(b -> !board.mines.contains(grid.indexOf(b)) && b.isVisible()).collect(Collectors.toList());
 		Random rand = new Random();
@@ -355,6 +380,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		int sq = grid.indexOf(hidden.get(index));
 		board.getNode(sq).setMine();
 		board.mines.add(sq);
+		board.addMine();
 		
 		// Update adjacent mine count
 		for (Node pos: board.getNode(sq).getAdjacent()) pos.addAdj();
@@ -365,7 +391,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		int action = JOptionPane.showConfirmDialog(
 			    null,
 			    lossmsgs[index] + "\n\nTry again?",
-			    "",
+			    "You've lost!",
 			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			    null);
 		if (action == JOptionPane.NO_OPTION){
@@ -380,7 +406,7 @@ public class GraphicsController extends MouseAdapter implements Runnable, Window
 		int action = JOptionPane.showConfirmDialog(
 			    null,
 			    winmsgs[index] + "\n\nPlay again?",
-			    "",
+			    "You win!!!",
 			    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null);
 		if (action == JOptionPane.NO_OPTION){
 			System.exit(0);
