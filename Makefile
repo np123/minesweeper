@@ -14,9 +14,12 @@ CP = ./bin # classpath variable
 
 .PHONY: default classes clean
 
-default: classes
+default: classes img
 
 classes: $(SRC:.java=.class)
+
+img:
+	cp -r assets/ bin/assets
 
 clean:
 	@echo "Remove all class file ..."
